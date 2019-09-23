@@ -14,6 +14,10 @@ import './index.css';
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.dayName = new Array ("domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado");
+    this.monName = new Array ("janeiro", "fevereiro", "março", "abril", "Maio", "junho", "agosto", "outubro", "novembro", "dezembro");
+
+
     this.state = {
       modal:false,
       events: [
@@ -22,7 +26,9 @@ class App extends React.Component {
           time: "10:00",
           title: "Breakfast with Simon",
           location: "Lounge Caffe",
-          description: "Discuss Q3 targets"
+          description: "Discuss Q3 targets",
+          data_criacao:""
+
         },
         {
           id: 2,
@@ -63,6 +69,7 @@ class App extends React.Component {
   };
 
   addEvent = () => {
+      const data = new Date();
       var newArray = [...this.state.events];
       newArray.push({
         id: newArray.length ? newArray[newArray.length - 1].id + 1 : 1,
@@ -70,14 +77,16 @@ class App extends React.Component {
         title: this.state.title,
         location: this.state.location,
         description: this.state.description,
-        value: this.var > 5 ? "Its's grater then 5" : "Its lower or equal 5"
+        value: this.var > 5 ? "Its's grater then 5" : "Its lower or equal 5" ,
+        data_criacao:data.getHours()+":"+data.getMinutes()+" do dia "+data.getDate()+" de "+this.monName[data.getMonth()]+"de "+data.getFullYear()
       });
       this.setState({ events: newArray });
       this.setState({
         time: "",
         title: "",
         location: "",
-        description: ""
+        description: "",
+        data_criacao:""
       });
     };
   render() {
@@ -99,6 +108,7 @@ class App extends React.Component {
                 title={elementodovetor.title}
                 location={elementodovetor.location}
                 description={elementodovetor.description}
+                data_criacao={elementodovetor.data_criacao}
                 onDelete={this.handleDelete}
                 />
               )
@@ -182,50 +192,57 @@ class App extends React.Component {
   }
   }
 
-  class Event extends React.Component {
-    state = {};
-    render() {
+  function Event (props){
+
+
       return (
 
 
         <React.Fragment>
         <div className="media mt-1">
           <h3 className="h3-responsive font-weight-bold mr-3">
-            {this.props.time}
+            {props.time}
           </h3>
           <div className="media-body mb-3 mb-lg-3">
             <MDBBadge
               color="danger"
               className="ml-2 float-right"
-              onClick={() => this.props.onDelete(this.props.id)}
+              onClick={() => props.onDelete(props.id)}
             >
               -
             </MDBBadge>
-            <h6 className="mt-0 font-weight-bold">{this.props.title} </h6>{" "}
+            <h6 className="mt-0 font-weight-bold">{props.title} </h6>
+            {props.data_criacao && (
+              <h6 className="mt-0 font-weight-italic" id="subtitle">
+                Compromisso criado às {props.data_criacao}
+              </h6>
+            )}
+
             <hr className="hr-bold my-2" />
             {/*Use curly braces({}) always when you want to pass
               something dinamically*/}
 
             {/*se this.props.location == true, então <h6>Loc...*/}
-            {this.props.location && (
+            {props.location && (
               <React.Fragment>
                 <p className="font-smaller mb-0">
-                  <MDBIcon icon="location-arrow" /> {this.props.location}
+                  <MDBIcon icon="location-arrow" /> {props.location}
                 </p>
               </React.Fragment>
             )}
           </div>
         </div>
-        {this.props.description && (
+        {props.description && (
           <p className="p-2 mb-4  blue-grey lighten-5 blue-grey lighten-5">
-            {this.props.description}
+            {props.description}
           </p>
         )}
 
 
+
         </React.Fragment>
       );
-    }
+
   }
 
 
