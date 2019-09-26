@@ -20,6 +20,7 @@ class App extends React.Component {
 
     this.state = {
       modal:false,
+      info_clima:"Carregando as informaçõe sobre o clima",
       events: [
         {
           id: 1,
@@ -50,6 +51,13 @@ class App extends React.Component {
   }
 
   /* */
+  componentDidMount() {
+    fetch('https://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=dc9bab23c4a48f40575d1f31bc3d8bc1')
+      .then(response => response.json())
+      .then(data => this.setState({ info_clima:data.weather[0].main}))
+      .catch(erro => this.setState({info_clima:"Erro ao carregar as informações do clima"}));
+  }
+
   handleDelete = eventId => {
     const events = this.state.events.filter(e => e.id !== eventId);
     this.setState({ events });
@@ -122,7 +130,30 @@ class App extends React.Component {
               </MDBRow>
             </MDBCol>
             {/*breakpoint at 3*/}
-            <MDBCol md="3" />
+            <MDBCol md="3">
+              <h3 className="text-uppercase my-3">Schedule</h3>
+              <h6 className="my-3">
+                It's going to be busy that today. You have{" "}
+                <b>{this.state.events.length} events </b> today.
+              </h6>
+              <h1 className="my-3">
+                <MDBRow>
+                  <MDBCol xs="3" className="text-center">
+                    <MDBIcon icon="sun" fixed />
+                  </MDBCol>
+                  <MDBCol xs="9">Sunny</MDBCol>
+                </MDBRow>
+                <MDBRow>
+                  <MDBCol xs="3" className="text-center">
+                  <MDBIcon icon="thermometer-three-quarters" fixed />                  
+                  </MDBCol>
+                  <MDBCol xs="9">23°C</MDBCol>
+                </MDBRow>
+              </h1>
+              <p>
+                {this.state.info_clima}
+              </p>
+				</MDBCol>
 
           </MDBRow>
         </MDBContainer>
